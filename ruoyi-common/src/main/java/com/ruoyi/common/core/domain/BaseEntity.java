@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.ruoyi.common.utils.SecurityUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Entity基类
@@ -105,6 +107,25 @@ public class BaseEntity implements Serializable
             params = new HashMap<>();
         }
         return params;
+    }
+
+    public void preInsert(){
+        String userId = SecurityUtils.getUserId();
+        if (StringUtils.isNotBlank(userId)) {
+            this.createBy = userId;
+            this.updateBy = userId;
+        }
+        Date date = new Date();
+        this.createTime = date;
+        this.updateTime = date;
+    }
+
+    public void preUpdate(){
+        String userId = SecurityUtils.getUserId();
+        if (StringUtils.isNotBlank(userId)) {
+            this.updateBy = userId;
+        }
+        this.updateTime = new Date();
     }
 
     public void setParams(Map<String, Object> params)

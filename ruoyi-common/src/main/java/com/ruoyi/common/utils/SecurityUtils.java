@@ -30,6 +30,17 @@ public class SecurityUtils
     }
 
     /**
+     * @Title: getUserId
+     * @Description: 获取用户ID
+     * @return: String返回类型
+     * @Author: wxz
+     * @Date: 2021/5/27 下午2:28
+     */
+    public static String getUserId(){
+        return getLoginUser().getUser().getUserId().toString();
+    }
+
+    /**
      * 获取用户
      **/
     public static LoginUser getLoginUser()

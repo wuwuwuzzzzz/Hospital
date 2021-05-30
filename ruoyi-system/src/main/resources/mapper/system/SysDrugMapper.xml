@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysDrugMapper">
+    
+    <resultMap type="com.ruoyi.system.domain.SysDrug" id="SysDrugResult">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="life" column="life"/>
+        <result property="startTime" column="start_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="supplierId" column="supplier_id"/>
+        <result property="number" column="number"/>
+        <result property="supplierName" column="supplier_name"></result>
+        <result property="userName" column="user_name"></result>
+        <result property="nickName" column="nick_name"></result>
+    </resultMap>
+
+    <sql id="selectSysDrugVo">
+        select
+            id, name, life, start_time, update_by, update_time, supplier_id, number
+        from sys_drug
+    </sql>
+
+    <select id="selectSysDrugList" parameterType="com.ruoyi.system.domain.SysDrug" resultMap="SysDrugResult">
+        select
+            sdu.id, sdu.name, sdu.life, sdu.start_time, sdu.update_by, sdu.update_time, sdu.supplier_id, sdu.number, su.user_name, ss.supplier_name, su.nick_name
+        from sys_drug sdu
+        left join sys_user su on sdu.update_by = su.user_id
+        left join sys_supplier ss on sdu.supplier_id = ss.supplier_id
+        <where>  
+            <if test="name != null  and name != ''">
+                and sdu.name like concat('%', #{name}, '%')
+            </if>
+            <if test="supplierName != null  and supplierName != ''">
+                and ss.supplier_name like concat('%', #{supplierName}, '%')
+            </if>
+            <if test="life != null ">
+                and sdu.life = #{life}
+            </if>
+            <if test="startTime != null ">
+                and sdu.start_time like concat('%', #{startTime}, '%')
+            </if>
+            <if test="updateBy != null ">
+                and sdu.update_by = #{updateBy}
+            </if>
+            <if test="updateTime != null ">
+                and sdu.update_time like concat('%', #{updateTime}, '%')
+            </if>
+            <if test="number != null ">
+                and sdu.number = #{number}
+            </if>
+        </where>
+        order by update_time DESC
+    </select>
+    
+    <select id="selectSysDrugById" parameterType="Long" resultMap="SysDrugResult">
+        select
+            sdu.id, sdu.name, sdu.life, sdu.start_time, sdu.update_by, sdu.update_time, sdu.supplier_id, sdu.number, su.user_name, ss.supplier_name
+        from sys_drug sdu
+        left join sys_user su on sdu.update_by = su.user_id
+        left join sys_supplier ss on sdu.supplier_id = ss.supplier_id
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSysDrug" parameterType="com.ruoyi.system.domain.SysDrug" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_drug
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                name,
+            </if>
+            <if test="life != null">
+                life,
+            </if>
+            <if test="startTime != null">
+                start_time,
+            </if>
+            <if test="updateBy != null">
+                update_by,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="supplierId != null">
+                supplier_id,
+            </if>
+            <if test="number != null">
+                number,
+            </if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                #{name},
+            </if>
+            <if test="life != null">
+                #{life},
+            </if>
+            <if test="startTime != null">
+                #{startTime},
+            </if>
+            <if test="updateBy != null">
+                #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime},
+            </if>
+            <if test="supplierId != null">
+                #{supplierId},
+            </if>
+            <if test="number != null">
+                #{number},
+            </if>
+         </trim>
+    </insert>
+
+    <update id="updateSysDrug" parameterType="com.ruoyi.system.domain.SysDrug">
+        update sys_drug
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="life != null">
+                life = #{life},
+            </if>
+            <if test="startTime != null">
+                start_time = #{startTime},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="supplierId != null">
+                supplier_id = #{supplierId},
+            </if>
+            <if test="number != null">
+                number = #{number},
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysDrugById" parameterType="Long">
+        delete from sys_drug where id = #{id}
+    </delete>
+
+    <delete id="deleteSysDrugByIds" parameterType="String">
+        delete from sys_drug where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
